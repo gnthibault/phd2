@@ -125,7 +125,7 @@ public:
 
     virtual bool SetLockPosition(const PHD_Point& position) override;
     bool IsLocked() const override;
-    bool AutoSelect(const wxRect& roi) override;
+    bool AutoSelect(const wxRect& roi, const bool force_star=false) override;
     const PHD_Point& CurrentPosition() const override;
     wxRect GetBoundingBox() const override;
     int GetMaxMovePixels() const override;

@@ -1823,7 +1823,7 @@ bool MyFrame::StartSingleExposure(int duration, wxByte binning, int gain, const 
     return false;
 }
 
-bool MyFrame::AutoSelectStar(const wxRect& roi)
+bool MyFrame::AutoSelectStar(const wxRect& roi, const bool force_star)
 {
     if (pGuider->IsCalibratingOrGuiding())
     {
@@ -1831,7 +1831,7 @@ bool MyFrame::AutoSelectStar(const wxRect& roi)
         return true; // error
     }
 
-    return pGuider->AutoSelect(roi);
+    return pGuider->AutoSelect(roi, force_star);
 }
 
 void MyFrame::StartCapturing()
