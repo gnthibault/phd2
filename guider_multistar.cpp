@@ -444,13 +444,14 @@ static wxString StarStatus(const Star& star)
     return status;
 }
 
-bool GuiderMultiStar::AutoSelect(const wxRect& roi)
+bool GuiderMultiStar::AutoSelect(const wxRect& roi, const bool force_star)
 {
     Debug.Write("GuiderMultiStar::AutoSelect enter\n");
 
     bool error = false;
 
     usImage *image = CurrentImage();
+    Debug.Write("####################################################### GuiderMultiStar::AutoSelect\n");
 
     try
     {
@@ -470,17 +471,28 @@ bool GuiderMultiStar::AutoSelect(const wxRect& roi)
             edgeAllowance = wxMax(edgeAllowance, pSecondaryMount->CalibrationTotDistance());
 
         GuideStar newStar;
-        if (!newStar.AutoFind(*image, edgeAllowance, m_searchRegion, roi, m_guideStars, MAX_LIST_SIZE))
+
+        int star_x = roi.GetLeft() + roi.GetWidth()/2;
+        int star_y = roi.GetTop() + roi.GetHeight()/2;
+        if (force_star)
         {
-            throw ERROR_INFO("Unable to AutoFind");
-        }
-
-        m_massChecker->Reset();
-
-        if (!m_primaryStar.Find(image, m_searchRegion, newStar.X, newStar.Y, Star::FIND_CENTROID, GetMinStarHFD(), GetMaxStarHFD(),
+          m_massChecker->Reset();
+          if (!m_primaryStar.Find(image, m_searchRegion, star_x, star_y, Star::FIND_CENTROID, GetMinStarHFD(), GetMaxStarHFD(),
+                           pCamera->GetSaturationADU(), Star::FIND_LOGGING_VERBOSE))
+          {
+              throw ERROR_INFO("Unable to find");
+          }
+        } else {
+          if (!newStar.AutoFind(*image, edgeAllowance, m_searchRegion, roi, m_guideStars, MAX_LIST_SIZE))
+          {
+              throw ERROR_INFO("Unable to AutoFind");
+          }
+          m_massChecker->Reset();
+          if (!m_primaryStar.Find(image, m_searchRegion, newStar.X, newStar.Y, Star::FIND_CENTROID, GetMinStarHFD(), GetMaxStarHFD(),
                          pCamera->GetSaturationADU(), Star::FIND_LOGGING_VERBOSE))
-        {
-            throw ERROR_INFO("Unable to find");
+          {
+              throw ERROR_INFO("Unable to find");
+          }
         }
 
         // DEBUG OUTPUT

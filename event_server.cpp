@@ -935,7 +935,7 @@ static void find_star(JObj& response, const json_value *params)
         return;
     }
 
-    bool error = pFrame->AutoSelectStar(roi);
+    bool error = pFrame->AutoSelectStar(roi, true);
 
     if (!error)
     {

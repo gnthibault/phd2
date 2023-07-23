@@ -413,7 +413,7 @@ public:
     bool StopCapturing();
     bool StartSingleExposure(int duration, const wxRect& subframe);
 
-    bool AutoSelectStar(const wxRect& roi = wxRect());
+    bool AutoSelectStar(const wxRect& roi = wxRect(), const bool force_star=false);
 
     void SetPaused(PauseType pause);
 
